@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel ECLSS - Missão Marte</title>
+  <style>
+    :root { color-scheme: dark; font-family: Arial, sans-serif; }
+    body { background: #101827; color: #f3f4f6; margin: 0; }
+    main { max-width: 720px; margin: 0 auto; padding: 2rem 1rem; }
+    h1 { color: #f97316; text-align: center; } .cards { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .card, form { background: #1f2937; border-radius: 10px; padding: 1rem; }
+    .card { flex: 1; min-width: 180px; margin-bottom: 1rem; } .value { font-size: 2rem; font-weight: bold; }
+    label { display: block; margin: 1rem 0 .4rem; }
+    input, button { box-sizing: border-box; padding: .7rem; width: 100%; border-radius: 6px; border: 1px solid #4b5563; }
+    button { background: #f97316; border: 0; color: white; cursor: pointer; margin-top: 1rem; }
+    #mensagem { min-height: 1.5rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Painel de Controle ECLSS</h1>
+    <p>Monitoramento de recursos do Habitat de Marte</p>
+    <section class="cards" aria-label="Níveis atuais">
+      <div class="card"><span>Oxigênio</span><div id="nivel-oxigenio" class="value">1000.00 kg</div></div>
+      <div class="card"><span>Água</span><div id="nivel-agua" class="value">2000.00 L</div></div>
+    </section>
+    <form id="form-cota">
+      <h2>Solicitar cota extra de oxigênio</h2>
+      <label for="quantidade">Quantidade (kg)</label>
+      <input id="quantidade" name="quantidade" type="number" min="1" step="0.01" required>
+      <button type="submit">Solicitar suprimento</button>
+      <div id="mensagem" role="status" aria-live="polite"></div>
+    </form>
+  </main>
+  <script>
+    const estado = { oxigenio: 1000, agua: 2000 };
+    const oxigenio = document.getElementById('nivel-oxigenio');
+    const agua = document.getElementById('nivel-agua');
+    const mensagem = document.getElementById('mensagem');
+    function renderizar() {
+      oxigenio.textContent = `${estado.oxigenio.toFixed(2)} kg`;
+      agua.textContent = `${estado.agua.toFixed(2)} L`;
+    }
+    document.getElementById('form-cota').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const quantidade = Number(document.getElementById('quantidade').value);
+      if (!Number.isFinite(quantidade) || quantidade <= 0) {
+        mensagem.textContent = 'Informe uma quantidade válida.';
+        return;
+      }
+      estado.oxigenio += quantidade;
+      renderizar();
+      mensagem.textContent = 'Cota de oxigênio aprovada e adicionada ao estoque.';
+      event.target.reset();
+    });
+  </script>
+</body>
+</html>
